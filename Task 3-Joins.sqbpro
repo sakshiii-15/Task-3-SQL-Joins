@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="Task 3.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1637"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="0" parent="0"/><expanded_item id="1" parent="0"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="customers" custom_title="0" dock_id="1" table="4,9:maincustomers"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011300ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="Task 3*">SELECT * FROM customers;
+SELECT * FROM orders;
+
+--- Joins Queries
+-- Inner JOIN
+
+--. Customers with their orders
+
+SELECT c.customer_name, o.order_id, o.product, o.quantity, o.unit_price
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+ORDER By c.customer_name, o.order_id;
+
+
+--  Total order amount per customer
+SELECT c.customer_name, COUNT(o.order_id) AS total_order, SUM(o.quantity * o.unit_price) as total_spent
+FROM customers c
+INNER JOIN orders o 
+ON c.customer_id = o.customer_id
+GROUP BY c.customer_name
+ORDER BY total_spent DESC;
+
+
+--  All customers with their orders
+
+SELECT * FROM customers c
+LEFT JOIN orders o
+ON c.customer_id = o.customer_id
+ORDER BY c.customer_name;
+
+
+-- Find customers with NO orders
+
+SELECT c.customer_name, o.order_id, o.product
+FROM customers c
+LEFT JOIN orders o
+ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+
+-- All orders with their customers
+
+SELECT c.customer_name, o.order_id, o.product, o.unit_price, o.quantity
+FROM customers c
+RIGHT JOIN orders o 
+ON c.customer_id = o.customer_id;
+
+
+-- Find orders with no matching customer
+SELECT o.order_id, o.product, o.quantity
+FROM orders o
+LEFT JOIN customers c
+ON o.customer_id = c.customer_id
+WHERE c.customer_id IS NULL;
+
+-- Full Outer Join 
+-- All customers and all orders
+
+SELECT c.customer_name, o.order_id, o.product
+FROM customers c 
+FULL OUTER JOIN orders o
+ON C.customer_id = O.customer_id;
+
+
+-- Another Way of doing Full Outer Join
+-- Note: FULL OUTER JOIN is not supported in all SQL databases (e.g., older SQLite/MySQL), so we use &quot;UNION&quot; as an alternative.
+
+SELECT c.customer_name, o.order_id, o.product
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+
+UNION
+
+SELECT c.customer_name, o.order_id, o.product
+FROM customers c
+RIGHT JOIN orders o ON c.customer_id = o.customer_id
+ORDER BY customer_name;
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
